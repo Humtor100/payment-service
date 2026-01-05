@@ -4,8 +4,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/payment_db
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    username: ${DB_USER:anime}
+    password: ${DB_PASSWORD:anime}
     driver-class-name: org.postgresql.Driver
 
   jpa:

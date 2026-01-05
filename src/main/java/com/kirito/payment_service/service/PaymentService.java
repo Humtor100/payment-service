@@ -3,6 +3,8 @@ package com.kirito.payment_service.service;
 import com.kirito.payment_service.dto.MakePaymentRequestDTO;
 import com.kirito.payment_service.entity.Account;
 import com.kirito.payment_service.entity.Transaction;
+import com.kirito.payment_service.exception.AccountNotFoundException;
+import com.kirito.payment_service.exception.InsufficientBalanceException;
 import com.kirito.payment_service.model.TransactionStatus;
 import com.kirito.payment_service.repository.AccountRepository;
 import com.kirito.payment_service.repository.TransactionRepository;
@@ -23,14 +25,14 @@ public class PaymentService {
     @Transactional
     public void makeTransfer(MakePaymentRequestDTO request) {
 
-        Account sourceAccount = accountRepository.findbyIdForUpdate(request.getSourceAccountId())
-                .orElseThrow(() -> new RuntimeException("Sender account not found"));
+        Account sourceAccount = accountRepository.findByIdForUpdate(request.getSourceAccountId())
+                .orElseThrow(() -> new AccountNotFoundException("Sender account not found"));
 
-        Account targetAccount = accountRepository.findbyIdForUpdate(request.getTargetAccountId())
-                .orElseThrow(() -> new RuntimeException("Receiver account not found"));
+        Account targetAccount = accountRepository.findByIdForUpdate(request.getTargetAccountId())
+                .orElseThrow(() -> new AccountNotFoundException("Receiver account not found"));
 
         if (sourceAccount.getBalance().compareTo(request.getAmount()) < 0) {
-            throw new RuntimeException("Insufficient funds");
+            throw new InsufficientBalanceException("Insufficient funds");
         }
 
         BigDecimal newSourceBalance = sourceAccount.getBalance().subtract(request.getAmount());

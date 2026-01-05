@@ -3,6 +3,7 @@ package com.kirito.payment_service.service;
 import com.kirito.payment_service.dto.AccountResponseDTO;
 import com.kirito.payment_service.dto.CreateAccountRequestDTO;
 import com.kirito.payment_service.entity.Account;
+import com.kirito.payment_service.exception.AccountNotFoundException;
 import com.kirito.payment_service.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class AccountService {
 
     public AccountResponseDTO getAccount(Long accountId) {
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account not found with id: " + accountId));
+                .orElseThrow(() -> new AccountNotFoundException("Account not found with id: " + accountId));
 
         return mapToDTO(account);
     }
