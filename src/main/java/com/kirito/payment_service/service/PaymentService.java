@@ -23,7 +23,19 @@ public class PaymentService {
     private final TransactionRepository transactionRepository;
 
     @Transactional
-    public void makeTransfer(MakePaymentRequestDTO request) {
+    public void processDeposit(Long accountId, BigDecimal amount){
+        Account account = accountRepository.findByIdForUpdate(accountId)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+        account.setBalance(account.getBalance().add(amount));
+        accountRepository.save(account);
+    }
+
+    @Transactional
+    public void makeTransfer(MakePaymentRequestDTO request, String idempotencyKey) {
+
+        if (transactionRepository.existsByIdempotencyKey(idempotencyKey)){
+            throw new IllegalStateException("Transaction with key " + idempotencyKey + "already exist");
+        }
 
         Account sourceAccount = accountRepository.findByIdForUpdate(request.getSourceAccountId())
                 .orElseThrow(() -> new AccountNotFoundException("Sender account not found"));
@@ -52,6 +64,9 @@ public class PaymentService {
         transaction.setCurrency(sourceAccount.getCurrency());
         transaction.setStatus(TransactionStatus.SUCCESS);
         transaction.setCreatedAt(LocalDateTime.now());
+
+        transaction.setIdempotencyKey(idempotencyKey);
         transactionRepository.save(transaction);
+
     }
 }

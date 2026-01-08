@@ -13,8 +13,10 @@ public class TransactionController {
     private final PaymentService paymentService;
 
     @PostMapping("/transfer")
-    public String makeTransfer(@RequestBody MakePaymentRequestDTO requestDTO) {
-        paymentService.makeTransfer(requestDTO);
+    public String makeTransfer(
+            @RequestHeader("Idempotency-Key") String idempotencyKey,
+            @RequestBody MakePaymentRequestDTO requestDTO) {
+        paymentService.makeTransfer(requestDTO, idempotencyKey);
         return "Transfer succesfull!";
     }
 }

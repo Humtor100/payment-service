@@ -5,8 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp; // Добавить зависимость hibernate-core, она есть в jpa
-
+import org.hibernate.annotations.CreationTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -17,10 +16,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Transaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Важно для SERIAL
-    private Long id; // Лучше использовать обертку Long, а не примитив long
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "source_account_id") // Явное указание имени колонки
+    @Column(name = "source_account_id")
     private Long sourceAccountId;
 
     @Column(name = "target_account_id", nullable = false)
@@ -30,13 +29,16 @@ public class Transaction {
     private BigDecimal amount;
 
     @Column(nullable = false)
-    private String currency; // Исправлена опечатка
+    private String currency;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TransactionStatus status; // Тип поля - Enum!
+    private TransactionStatus status;
 
-    @CreationTimestamp // Автоматически заполнит время при сохранении
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "idempotency_key", unique = true)
+    private String idempotencyKey;
 }

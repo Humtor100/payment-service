@@ -2,9 +2,11 @@ package com.kirito.payment_service.service;
 
 import com.kirito.payment_service.dto.AccountResponseDTO;
 import com.kirito.payment_service.dto.CreateAccountRequestDTO;
+import com.kirito.payment_service.dto.DepositRequestDTO;
 import com.kirito.payment_service.entity.Account;
 import com.kirito.payment_service.exception.AccountNotFoundException;
 import com.kirito.payment_service.repository.AccountRepository;
+import com.kirito.payment_service.service.provider.PaymentProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,19 @@ import java.math.BigDecimal;
 public class AccountService {
 
     private final AccountRepository accountRepository; // Лучше private
+    private final PaymentProvider paymentProvider;
+    private final PaymentService paymentService;
+
+    public void deposit(DepositRequestDTO request) {
+
+        boolean paymentSuccess = paymentProvider.processPayment(request.getCardNumber(), request.getAmount());
+
+        if (!paymentSuccess) {
+            throw new RuntimeException("Bank rejected transaction");
+        }
+
+        paymentService.processDeposit(request.getAccountId(), request.getAmount());
+    }
 
     public AccountResponseDTO createAccount(CreateAccountRequestDTO request) {
         Account account = new Account();
@@ -46,4 +61,6 @@ public class AccountService {
         dto.setCurrency(account.getCurrency());
         return dto;
     }
+
+
 }
