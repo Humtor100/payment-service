@@ -1,17 +1,19 @@
 package com.kirito.payment_service.service.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Random;
 
 @Component
+@Slf4j
 public class MockPaymentProvider implements PaymentProvider{
 
     @Override
     public boolean processPayment(String cardNumber, BigDecimal amount) {
         try {
-            System.out.println("Connecting to external bank...");
+            log.info("Connecting to external bank... {}", cardNumber);
             Thread.sleep(2000);
         }
         catch (InterruptedException e) {
@@ -20,10 +22,10 @@ public class MockPaymentProvider implements PaymentProvider{
         }
 
         if (new Random().nextInt(10) < 2) {
-            System.out.println("Payment rejected by bank!");
+            log.warn("Payment rejected by bank for amount {}", amount);
             return false;
         }
-        System.out.println("Payment processed successfully.");
+        log.info("Payment processed successfully");
         return true;
     }
 }

@@ -1,11 +1,25 @@
 version: '3.8'
+
 services:
+  app:
+    build: .
+    container_name: payment-service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/payment_db
+      - SPRING_DATASOURCE_USERNAME=anime
+      - SPRING_DATASOURCE_PASSWORD=anime
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:15-alpine
     container_name: payment_postgres
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=anime
+      - POSTGRES_PASSWORD=anime
+      - POSTGRES_DB=payment_db
+    restart: always

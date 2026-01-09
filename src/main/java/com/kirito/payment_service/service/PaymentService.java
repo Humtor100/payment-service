@@ -9,6 +9,7 @@ import com.kirito.payment_service.model.TransactionStatus;
 import com.kirito.payment_service.repository.AccountRepository;
 import com.kirito.payment_service.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentService {
 
     private final AccountRepository accountRepository;
@@ -68,5 +70,10 @@ public class PaymentService {
         transaction.setIdempotencyKey(idempotencyKey);
         transactionRepository.save(transaction);
 
+        log.info("Transfer was done: sum {} from {} to {}",
+                request.getAmount(),
+                request.getSourceAccountId(),
+                request.getTargetAccountId()
+        );
     }
 }
