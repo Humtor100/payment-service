@@ -15,9 +15,10 @@ public class AuditScheduler {
 
     private final AccountRepository accountRepository;
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRateString = "${payment-service.audit.interval}")
     public void reportTotalBalance() {
+
         BigDecimal total = accountRepository.getTotalBalance();
-        log.info("AUDIT: Total money in the bank: {}", total, "{} RUB");
+        log.info("AUDIT: Total money in the bank: {} RUB", total);
     }
 }

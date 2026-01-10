@@ -21,3 +21,10 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+
+payment-service:
+  audit:
+    interval: 60000
+  provider:
+    delay: 2000
+    failure-rate: 2

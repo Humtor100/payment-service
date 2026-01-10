@@ -1,0 +1,5 @@
+Name of project - Payment-service
+Technologies: Java 17, Spring Boot 3, PostgreSQL, Docker.
+How to run: docker-compose up --build
+Swagger: http://localhost:8080/swagger-ui/index.html
+Features: Transactions, SpringSecurity, Pessimistic Locking.

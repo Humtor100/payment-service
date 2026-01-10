@@ -2,10 +2,8 @@ package com.kirito.payment_service.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.CustomLog;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.mapping.PrimaryKey;
 
 @Entity
 @Data
